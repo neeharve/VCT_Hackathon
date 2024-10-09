@@ -1,48 +1,41 @@
 import boto3
 import json
+from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 
-# Initialize the Bedrock Runtime client with a specific profile
-client = boto3.client('bedrock-runtime', region_name='us-east-1')
+# Flag to enable mock responses
+USE_MOCK = False  # Set to True to use mock responses
 
 def generate_text(prompt):
-    body = json.dumps({
-        "inputText": prompt,
-        "textGenerationConfig": {
-            "maxTokenCount": 100,
-            "stopSequences": [],
-            "temperature": 0.7,
-            "topP": 1
-        }
-    })
-
     try:
+        # Initialize boto3 session (uses the active credentials)
+        session = boto3.Session()
+        client = session.client('bedrock-runtime', region_name='us-east-1')  # Replace with your region
+
         response = client.invoke_model(
-            modelId='amazon.titan-text-lite-v1',
-            body=body,
-            contentType='application/json',
-            accept='application/json'
+            modelId='amazon.titan-text-lite-v1',  # Changed from ModelId to modelId
+            body=json.dumps({"inputText": prompt}),  # Changed from Body to body and adjusted the input format
+            contentType='application/json',  # Changed from ContentType to contentType
+            accept='application/json'  # Added accept parameter
         )
+
         response_body = json.loads(response['body'].read())
-        print("Full response:", response_body)  # Add this line for debugging
+        return response_body.get('results', [{}])[0].get('outputText', 'No response from model.')
 
-        return response_body['results'][0]['outputText']
+    except NoCredentialsError:
+        return "AWS credentials not found. Please configure your credentials."
+    except PartialCredentialsError:
+        return "Incomplete AWS credentials. Please check your configuration."
+    except client.exceptions.AccessDeniedException:
+        return "Access Denied: You don't have permission to access this model."
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
-        return None
-    
-# Testing with a basic prompt 
-# prompt = "Give me an overview of the Valorant Champions Tour"
-# result = generate_text(prompt)
-# if result:
-#     print("Generated text:")
-#     print(result)
-# else:
-#     print("Failed to generate text from the model.")
+        return f"An unexpected error occurred: {str(e)}"
 
-prompt = "Who are the top Valorant players?"
-result = generate_text(prompt)
-if result:
-    print("Generated text:")
-    print(result)
-else:
-    print("Failed to generate text from the model.")
+def get_mock_response(user_input):
+    # Define mock responses
+    sample_responses = {
+        "Hello": "Hi there! How can I assist you with Valorant today?",
+        "What is Valorant?": "Valorant is a tactical first-person shooter developed by Riot Games.",
+        "Thank you": "You're welcome! Feel free to ask me anything about Valorant.",
+        # Add more sample interactions as needed
+    }
+    return sample_responses.get(user_input.strip(), "I'm sorry, I don't understand that. Can you please rephrase?")
