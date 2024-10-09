@@ -1,1 +1,5 @@
 path/to/venv/
+vct_hackathon/
+chatbot.log
+__pycache__
+.DS_Store
