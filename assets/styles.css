@@ -1,0 +1,161 @@
+/* General Styles */
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #f5f5f5;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Ensure the body takes full viewport height */
+}
+
+/* Chat Wrapper */
+.chat-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px;
+    background-color: #1E1E1E;  /* Dark background */
+    border: 1px solid #333;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    height: calc(100vh - 120px);  /* Adjust based on your layout */
+}
+
+.chat-wrapper::-webkit-scrollbar {
+    width: 8px;
+}
+
+.chat-wrapper::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.2);
+    border-radius: 4px;
+}
+
+.chat-wrapper:focus-within {
+    outline: none;
+}
+
+/* Each Chat Message Container */
+.chat-container {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 10px; /* Reduced margin for tighter spacing between messages */
+}
+
+/* Avatars */
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin: 0 10px;
+}
+
+/* Message Bubbles */
+.message {
+    padding: 10px 15px;
+    border-radius: 10px;
+    max-width: 70%;
+    margin-bottom: 5px;  /* Reduce space between messages */
+    word-wrap: break-word;
+    position: relative;
+}
+
+.user-message {
+    background-color: #4CAF50;  /* Green for user messages */
+    color: white;
+    align-self: flex-end;
+    text-align: right;
+}
+
+.bot-message {
+    background-color: #2C2C2C;  /* Darker shade for bot messages */
+    color: white;
+    align-self: flex-start;
+    text-align: left;
+}
+
+/* Timestamps */
+.timestamp {
+    display: block;
+    font-size: 12px;
+    color: #999999;
+    margin-top: 5px;
+}
+
+/* Typing Indicator Styling */
+.typing::after {
+    content: 'typing...';
+    animation: ellipsis 1s infinite;
+}
+
+@keyframes ellipsis {
+    0% { content: '.'; }
+    25% { content: '..'; }
+    50% { content: '...'; }
+    75% { content: '....'; }
+    100% { content: '...' }
+}
+
+/* Input Container */
+.input-container {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    background-color: #2C2C2C;
+    border-radius: 20px;
+    padding: 10px;
+}
+
+input[type="text"] {
+    flex-grow: 1;
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 16px;
+    outline: none;
+}
+
+input[type="text"]::placeholder {
+    color: #888;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .message {
+        max-width: 80%;
+    }
+
+    .avatar {
+        width: 30px;
+        height: 30px;
+    }
+
+    input[type="text"] {
+        font-size: 14px;
+    }
+
+    button {
+        font-size: 14px;
+    }
+}
